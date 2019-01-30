@@ -1,9 +1,9 @@
 from django.db import models
 
 
-class Collection(models.Model):
+class Network(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    collection_id = models.TextField(unique=True)
+    network_id = models.TextField(unique=True)
 
     class Meta:
         ordering = ('created',)
@@ -11,7 +11,7 @@ class Collection(models.Model):
 
 class Database(models.Model):
     created = models.DateTimeField(auto_now_add=True)
-    collection_id = models.TextField()
+    network_id = models.TextField()
     database_id = models.TextField()
     database_name = models.TextField(default="None")
     database_path = models.TextField(default="None")
@@ -19,4 +19,4 @@ class Database(models.Model):
 
     class Meta:
         ordering = ('created',)
-        unique_together = ('collection_id', 'database_id',)
+        unique_together = ('network_id', 'database_id',)

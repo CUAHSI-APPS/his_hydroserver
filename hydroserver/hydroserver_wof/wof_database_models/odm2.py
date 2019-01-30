@@ -6,7 +6,11 @@ from hydroserver_wof.models import WofModels
 
 def get_sites(network, database, database_path, params):
 
-    sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    try:
+        sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    except:
+        return "400_Bad_Request"
+
     cursor = sql_connect.cursor()
 
     query_table = WofModels.query_table
@@ -55,7 +59,11 @@ def get_sites(network, database, database_path, params):
 
 def get_site_info(network, database, database_path, params):
 
-    sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    try:
+        sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    except:
+        return "400_Bad_Request"
+
     cursor = sql_connect.cursor()
 
     query_table = WofModels.query_table
@@ -195,7 +203,11 @@ def get_site_info(network, database, database_path, params):
 
 def get_variables(network, database, database_path, params):
 
-    sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    try:
+        sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    except:
+        return "400_Bad_Request"
+
     cursor = sql_connect.cursor()
 
     query_table = WofModels.query_table
@@ -251,7 +263,11 @@ def get_variables(network, database, database_path, params):
 
 def get_variable_info(network, database, database_path, params):
 
-    sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    try:
+        sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    except:
+        return "400_Bad_Request"
+
     cursor = sql_connect.cursor()
 
     query_table = WofModels.query_table
@@ -305,7 +321,11 @@ def get_variable_info(network, database, database_path, params):
 
 def get_values(network, database, database_path, params):
 
-    sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    try:
+        sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    except:
+        return "400_Bad_Request"
+
     cursor = sql_connect.cursor()
 
     query_table = WofModels.query_table

@@ -18,8 +18,6 @@ def criteria_(method_called, location_param, variable_param, begin_datetime, end
 
     time_param = time_param_(begin_datetime, end_datetime)
 
-    print(time_param)
-
     criteria.update({"MethodCalled": method_called} if method_called else {})
     criteria.update({"locationParam": location_param} if location_param else {})
     criteria.update({"variableParam": variable_param} if variable_param else {})

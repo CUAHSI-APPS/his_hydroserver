@@ -25,14 +25,20 @@ def get_wof_response(databases, outputs, params):
 
     if response_format not in ["waterml", "waterjson"]:
         response_format = "waterml"
-        params.format = "waterml"
+        params["format"] = "waterml"
 
-    database_details = Database.objects.get(collection_id=network, database_id=database)
+    try:
+        database_details = Database.objects.get(network_id=network, database_id=database)
+    except Database.DoesNotExist:
+        return "404_Not_Found"
+
     database_model = getattr(database_details, "database_type")
     database_path = getattr(database_details, "database_path")
 
     start = time.time()
     output_data = databases[database_model](network=network, database=database, database_path=database_path, params=params)
+    if output_data == "400_Bad_Request":
+        return "400_Bad_Request"
     print(f"Extraction Time: {time.time()-start} seconds")
 
     start = time.time()

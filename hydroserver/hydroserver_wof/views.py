@@ -186,13 +186,16 @@ class GetSites(viewsets.ViewSet):
             "query_url": request.build_absolute_uri()
         }
 
-        # Determine if all params exist
-
         content_type = get_content_type(params["format"])
 
         response = get_wof_response(databases, outputs, params)
 
-        return Response(response, status.HTTP_200_OK, content_type=content_type)
+        if response == "404_Not_Found":
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        elif response == "400_Bad_Request":
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(response, status.HTTP_200_OK, content_type=content_type)
 
 
 class GetSiteInfo(viewsets.ViewSet):
@@ -229,14 +232,17 @@ class GetSiteInfo(viewsets.ViewSet):
             "query_url": request.build_absolute_uri(),
             "site_code": request.GET.get("site_code")
         }
-        
-        # Determine if all params exist
 
         content_type = get_content_type(params["format"])
 
         response = get_wof_response(databases, outputs, params)
 
-        return Response(response, status.HTTP_200_OK, content_type=content_type)
+        if response == "404_Not_Found":
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        elif response == "400_Bad_Request":
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(response, status.HTTP_200_OK, content_type=content_type)
 
 
 class GetVariables(viewsets.ViewSet):
@@ -271,14 +277,17 @@ class GetVariables(viewsets.ViewSet):
             "format": request.GET.get("format"),
             "query_url": request.build_absolute_uri()
         }
-        
-        # Determine if all params exist
 
         content_type = get_content_type(params["format"])
 
         response = get_wof_response(databases, outputs, params)
 
-        return Response(response, status.HTTP_200_OK, content_type=content_type)
+        if response == "404_Not_Found":
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        elif response == "400_Bad_Request":
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(response, status.HTTP_200_OK, content_type=content_type)
 
 
 class GetVariableInfo(viewsets.ViewSet):
@@ -315,14 +324,17 @@ class GetVariableInfo(viewsets.ViewSet):
             "query_url": request.build_absolute_uri(),
             "variable_code": request.GET.get("variable_code")
         }
-        
-        # Determine if all params exist
 
         content_type = get_content_type(params["format"])
 
         response = get_wof_response(databases, outputs, params)
 
-        return Response(response, status.HTTP_200_OK, content_type=content_type)
+        if response == "404_Not_Found":
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        elif response == "400_Bad_Request":
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(response, status.HTTP_200_OK, content_type=content_type)
 
 
 class GetValues(viewsets.ViewSet):
@@ -367,10 +379,13 @@ class GetValues(viewsets.ViewSet):
             "end_time": request.GET.get("end_time")
         }
 
-        # Determine if all params exist
-
         content_type = get_content_type(params["format"])
 
         response = get_wof_response(databases, outputs, params)
 
-        return Response(response, status.HTTP_200_OK, content_type=content_type)
+        if response == "404_Not_Found":
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        elif response == "400_Bad_Request":
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(response, status.HTTP_200_OK, content_type=content_type)

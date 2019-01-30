@@ -4,8 +4,14 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework import status
 from rest_framework import viewsets, status
-from hydroserver_core.rest_api.models import Collection, Database
-from hydroserver_core.rest_api.serializers import CollectionSerializer, DatabaseSerializer
+from hydroserver_core.rest_api.models import Network, Database
+from hydroserver_core.rest_api.serializers import NetworkSerializer, DatabaseSerializer
+from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
+
+
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
 
 
 class Networks(viewsets.ViewSet):
@@ -15,16 +21,18 @@ class Networks(viewsets.ViewSet):
     Test
     """
 
+    permission_classes = (IsAuthenticated|ReadOnly,)
+
     def get_networks(self, request, *args, **kwargs):
 
-        resources = Collection.objects.all()
-        serializer = CollectionSerializer(resources, many=True)
+        resources = Network.objects.all()
+        serializer = NetworkSerializer(resources, many=True)
 
         return Response(serializer.data)
 
     def post_network(self, request, *args, **kwargs):
 
-        serializer = CollectionSerializer(data=request.data)
+        serializer = NetworkSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -39,28 +47,30 @@ class NetworkDetails(viewsets.ViewSet):
     Test
     """
 
+    permission_classes = (IsAuthenticated|ReadOnly,)
+
     def get_network_details(self, request, network_id, *args, **kwargs):
 
         try:
-            collection = Collection.objects.get(collection_id=network_id)
-        except Collection.DoesNotExist:
+            network = Network.objects.get(network_id=network_id)
+        except Network.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = CollectionSerializer(collection)
+        serializer = NetworkSerializer(collection)
 
         return Response(serializer.data)
 
     def delete_network(self, request, network_id, *args, **kwargs):
 
         try:
-            collection = Collection.objects.get(collection_id=network_id)
-        except Collection.DoesNotExist:
+            network = Network.objects.get(network_id=network_id)
+        except Network.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        databases = Database.objects.filter(collection_id=collection_id)
+        databases = Database.objects.filter(network_id=network_id)
 
         databases.delete()
-        collection.delete()
+        network.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -72,21 +82,23 @@ class Databases(viewsets.ViewSet):
     Test
     """
 
+    permission_classes = (IsAuthenticated|ReadOnly,)
+
     def get_databases(self, request, network_id, *args, **kwargs):
 
         try:
-            collection = Collection.objects.get(collection_id=network_id)
-        except Collection.DoesNotExist:
+            network = Network.objects.get(network_id=network_id)
+        except Network.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        databases = Database.objects.filter(collection_id=network_id).values()
+        databases = Database.objects.filter(network_id=network_id).values()
         serializer = DatabaseSerializer(databases, many=True)
 
         return Response(serializer.data)
 
     def post_database(self, request, network_id, *args, **kwargs):
 
-        request.data.update({"collection_id": network_id})
+        request.data.update({"network_id": network_id})
         serializer = DatabaseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -102,10 +114,12 @@ class DatabaseDetails(viewsets.ViewSet):
     Test
     """
 
+    permission_classes = (IsAuthenticated|ReadOnly,)
+
     def get_database_details(self, request, network_id, database_id, *args, **kwargs):
 
         try:
-            database = Database.objects.get(collection_id=collection_id, database_id=database_id)
+            database = Database.objects.get(network_id=network_id, database_id=database_id)
         except Database.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -116,11 +130,11 @@ class DatabaseDetails(viewsets.ViewSet):
     def delete_database(self, request, network_id, database_id, *args, **kwargs):
 
         try:
-            database = Database.objects.get(collection_id=collection_id, database_id=database_id)
+            database = Database.objects.get(network_id=network_id, database_id=database_id)
         except Database.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        databases = Database.objects.filter(collection_id=collection_id)
+        databases = Database.objects.filter(network_id=network_id)
 
         database.delete()
 
