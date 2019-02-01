@@ -35,7 +35,6 @@ RUN mkdir hydroserver
 COPY environment.yml $HYDROSERVER_HOME
 COPY hydroserver/ $HYDROSERVER_HOME/hydroserver
 COPY startup.sh $HYDROSERVER_HOME
-#COPY supervisord.conf $HYDROSERVER_HOME
 COPY his_hydroserver.conf /etc/nginx/conf.d/
 
 RUN sudo chown -R hsapp $HYDROSERVER_HOME/hydroserver
@@ -64,4 +63,5 @@ EXPOSE 8090
 # Run HydroServer ----------------------------------------------------------------------------------------#
 
 RUN sudo chmod +x startup.sh
+USER root
 CMD ["./startup.sh"]

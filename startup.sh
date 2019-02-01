@@ -1,8 +1,8 @@
 #!/bin/bash
 
 
-sudo /usr/sbin/nginx
+source /home/hsapp/miniconda2/bin/activate hydroserver
 
-source activate hydroserver
-cd /home/hsapp/hydroserver
-./hydroserver.sh
+python /home/hsapp/hydroserver/manage.py collectstatic --noinput
+
+/usr/bin/supervisord -c /home/hsapp/hydroserver/supervisord.conf
