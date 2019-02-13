@@ -7,21 +7,9 @@ import coreapi
 from hydroserver_wof.utilities import get_content_type, get_wof_response
 
 
-class GetSitesFilterBackend(BaseFilterBackend):
+class SitesFilterBackend(BaseFilterBackend):
     def get_schema_fields(self, view):
         return [coreapi.Field(
-            name='network',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
-            name='database',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
             name='format',
             location='query',
             required=False,
@@ -29,21 +17,9 @@ class GetSitesFilterBackend(BaseFilterBackend):
         )]
 
 
-class GetSiteInfoFilterBackend(BaseFilterBackend):
+class SiteInfoFilterBackend(BaseFilterBackend):
     def get_schema_fields(self, view):
         return [coreapi.Field(
-            name='network',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
-            name='database',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
             name='format',
             location='query',
             required=False,
@@ -57,21 +33,9 @@ class GetSiteInfoFilterBackend(BaseFilterBackend):
         )]
 
 
-class GetVariablesFilterBackend(BaseFilterBackend):
+class VariablesFilterBackend(BaseFilterBackend):
     def get_schema_fields(self, view):
         return [coreapi.Field(
-            name='network',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
-            name='database',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
             name='format',
             location='query',
             required=False,
@@ -79,21 +43,9 @@ class GetVariablesFilterBackend(BaseFilterBackend):
         )]
 
 
-class GetVariableInfoFilterBackend(BaseFilterBackend):
+class VariableInfoFilterBackend(BaseFilterBackend):
     def get_schema_fields(self, view):
         return [coreapi.Field(
-            name='network',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
-            name='database',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
             name='format',
             location='query',
             required=False,
@@ -107,21 +59,9 @@ class GetVariableInfoFilterBackend(BaseFilterBackend):
         )]
 
 
-class GetValuesFilterBackend(BaseFilterBackend):
+class ValuesFilterBackend(BaseFilterBackend):
     def get_schema_fields(self, view):
         return [coreapi.Field(
-            name='network',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
-            name='database',
-            location='query',
-            required=True,
-            type='string'
-        ),
-        coreapi.Field(
             name='format',
             location='query',
             required=False,
@@ -153,12 +93,12 @@ class GetValuesFilterBackend(BaseFilterBackend):
         )]
 
 
-class GetSites(viewsets.ViewSet):
+class Sites(viewsets.ViewSet):
 
-    filter_backends = (GetSitesFilterBackend,)
+    filter_backends = (SitesFilterBackend,)
     renderer_classes = (HydroServerRenderer,)
 
-    def get_sites(self, request, *args, **kwargs):
+    def get_sites(self, request, network_id, database_id, *args, **kwargs):
         """
         Gets a list of available sites from a database.
         
@@ -180,8 +120,8 @@ class GetSites(viewsets.ViewSet):
         }
 
         params = {
-            "network": request.GET.get("network"),
-            "database": request.GET.get("database"),
+            "network": network_id,
+            "database": database_id,
             "format": request.GET.get("format"),
             "query_url": request.build_absolute_uri()
         }
@@ -198,12 +138,12 @@ class GetSites(viewsets.ViewSet):
             return Response(response, status.HTTP_200_OK, content_type=content_type)
 
 
-class GetSiteInfo(viewsets.ViewSet):
+class SiteInfo(viewsets.ViewSet):
 
-    filter_backends = (GetSiteInfoFilterBackend,)
+    filter_backends = (SiteInfoFilterBackend,)
     renderer_classes = (HydroServerRenderer,)
 
-    def get_site_info(self, request, *args, **kwargs):
+    def get_site_info(self, request, network_id, database_id, *args, **kwargs):
         """
         Gets information for a single site from a database.
         
@@ -226,8 +166,8 @@ class GetSiteInfo(viewsets.ViewSet):
         }
 
         params = {
-            "network": request.GET.get("network"),
-            "database": request.GET.get("database"),
+            "network": network_id,
+            "database": database_id,
             "format": request.GET.get("format"),
             "query_url": request.build_absolute_uri(),
             "site_code": request.GET.get("site_code")
@@ -245,12 +185,12 @@ class GetSiteInfo(viewsets.ViewSet):
             return Response(response, status.HTTP_200_OK, content_type=content_type)
 
 
-class GetVariables(viewsets.ViewSet):
+class Variables(viewsets.ViewSet):
 
-    filter_backends = (GetVariablesFilterBackend,)
+    filter_backends = (VariablesFilterBackend,)
     renderer_classes = (HydroServerRenderer,)
 
-    def get_variables(self, request, *args, **kwargs):
+    def get_variables(self, request, network_id, database_id, *args, **kwargs):
         """
         Gets a list of available variables from a database.
         
@@ -260,6 +200,8 @@ class GetVariables(viewsets.ViewSet):
         :param database: The database ID to get variables from.
         :param format: The format of the response.
         """
+
+        print("HEY!!")
 
         databases = {
             "odm2": wof_database_models.odm2.get_variables,
@@ -272,8 +214,8 @@ class GetVariables(viewsets.ViewSet):
         }
 
         params = {
-            "network": request.GET.get("network"),
-            "database": request.GET.get("database"),
+            "network": network_id,
+            "database": database_id,
             "format": request.GET.get("format"),
             "query_url": request.build_absolute_uri()
         }
@@ -290,12 +232,12 @@ class GetVariables(viewsets.ViewSet):
             return Response(response, status.HTTP_200_OK, content_type=content_type)
 
 
-class GetVariableInfo(viewsets.ViewSet):
+class VariableInfo(viewsets.ViewSet):
 
-    filter_backends = (GetVariableInfoFilterBackend,)
+    filter_backends = (VariableInfoFilterBackend,)
     renderer_classes = (HydroServerRenderer,)
 
-    def get_variable_info(self, request, *args, **kwargs):
+    def get_variable_info(self, request, network_id, database_id, *args, **kwargs):
         """
         Gets information for a single variable from a database.
         
@@ -318,8 +260,8 @@ class GetVariableInfo(viewsets.ViewSet):
         }
 
         params = {
-            "network": request.GET.get("network"),
-            "database": request.GET.get("database"),
+            "network": network_id,
+            "database": database_id,
             "format": request.GET.get("format"),
             "query_url": request.build_absolute_uri(),
             "variable_code": request.GET.get("variable_code")
@@ -337,12 +279,12 @@ class GetVariableInfo(viewsets.ViewSet):
             return Response(response, status.HTTP_200_OK, content_type=content_type)
 
 
-class GetValues(viewsets.ViewSet):
+class Values(viewsets.ViewSet):
 
-    filter_backends = (GetValuesFilterBackend,)
+    filter_backends = (ValuesFilterBackend,)
     renderer_classes = (HydroServerRenderer,)
 
-    def get_values(self, request, *args, **kwargs):
+    def get_values(self, request, network_id, database_id, *args, **kwargs):
         """
         Gets time series values given a variable, site, start time, and end time.
         
@@ -369,8 +311,8 @@ class GetValues(viewsets.ViewSet):
         }
 
         params = {
-            "network": request.GET.get("network"),
-            "database": request.GET.get("database"),
+            "network": network_id,
+            "database": database_id,
             "format": request.GET.get("format"),
             "query_url": request.build_absolute_uri(),
             "site_code": request.GET.get("site_code"),

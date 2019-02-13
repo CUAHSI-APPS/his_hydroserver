@@ -56,7 +56,7 @@ class NetworkDetails(viewsets.ViewSet):
         except Network.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        serializer = NetworkSerializer(collection)
+        serializer = NetworkSerializer(network)
 
         return Response(serializer.data)
 
@@ -98,7 +98,7 @@ class Databases(viewsets.ViewSet):
 
     def post_database(self, request, network_id, *args, **kwargs):
 
-        request.data.update({"network_id": network_id})
+        #request.data.update({"network_id": network_id})
         serializer = DatabaseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

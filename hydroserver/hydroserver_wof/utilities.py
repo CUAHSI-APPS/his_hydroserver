@@ -27,6 +27,10 @@ def get_wof_response(databases, outputs, params):
         response_format = "waterml"
         params["format"] = "waterml"
 
+    print(':::::')
+    print(network)
+    print(database)
+
     try:
         database_details = Database.objects.get(network_id=network, database_id=database)
     except Database.DoesNotExist:
