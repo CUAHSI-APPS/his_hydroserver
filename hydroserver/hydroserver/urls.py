@@ -25,4 +25,5 @@ urlpatterns = [
     url(r'^hydroserver/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     url(r'^hydroserver/rest/', include('hydroserver_core.rest_api.urls')),
     url(r'^hydroserver/wof/', include('hydroserver_wof.urls')),
+    url(r'^hydroserver/refts/', include('hydroserver_core.refts.urls')),
 ]

@@ -1,10 +1,19 @@
 import pandas as pd
+from hydroserver_wof.models import WofModels
+from xml.sax.saxutils import escape, unescape
+
+
+def e(text):
+    if isinstance(text, str): 
+        return escape(unescape(text))
+    else:
+        return text
 
 
 def query_url_(query_url):
     return (
         f'<queryURL>'
-        f'{query_url}'
+        f'{e(query_url)}'
         f'</queryURL>'
     )
 
@@ -12,7 +21,7 @@ def query_url_(query_url):
 def begin_datetime_(begin_datetime):
     return (
         f'<beginDateTime>'
-        f'{begin_datetime}'
+        f'{e(begin_datetime)}'
         f'</beginDateTime>'
     )
 
@@ -20,7 +29,7 @@ def begin_datetime_(begin_datetime):
 def end_datetime_(end_datetime):
     return (
         f'<endDateTime>'
-        f'{end_datetime}'
+        f'{e(end_datetime)}'
         f'</endDateTime>'
     )
 
@@ -37,7 +46,7 @@ def time_param_(begin_datetime, end_datetime):
 def variable_param_(variable_param):
     return (
         f'<variableParam>'
-        f'{variable_param}'
+        f'{e(variable_param)}'
         f'</variableParam>'
     )
 
@@ -45,7 +54,7 @@ def variable_param_(variable_param):
 def location_param_(location_param):
     return (
         f'<locationParam>'
-        f'{location_param}'
+        f'{e(location_param)}'
         f'</locationParam>'
     )
 
@@ -63,7 +72,7 @@ def criteria_(method_called, location_param, variable_param, begin_datetime, end
 def creation_time_(creation_time):
     return (
         f'<creationTime>'
-        f'{creation_time}'
+        f'{e(creation_time)}'
         f'</creationTime>'
     )
 
@@ -81,7 +90,7 @@ def query_info_(creation_time, query_url, method_called, location_param, variabl
 def site_code_(site_code):
     return (
         f'<siteCode network="default">'
-        f'{site_code}'
+        f'{e(site_code)}'
         f'</siteCode>'
     )
 
@@ -89,7 +98,7 @@ def site_code_(site_code):
 def site_name_(site_name):
     return (
         f'<siteName>'
-        f'{site_name}'
+        f'{e(site_name)}'
         f'</siteName>'
     )
 
@@ -97,7 +106,7 @@ def site_name_(site_name):
 def latitude_(latitude):
     return (
         f'<latitude>'
-        f'{latitude}'
+        f'{e(latitude)}'
         f'</latitude>'
     )
 
@@ -105,7 +114,7 @@ def latitude_(latitude):
 def longitude_(longitude):
     return (
         f'<longitude>'
-        f'{longitude}'
+        f'{e(longitude)}'
         f'</longitude>'
     )
 
@@ -130,7 +139,7 @@ def geolocation_(latitude, longitude):
 def elevation_m_(elevation_m):
     return (
         f'<elevation_m>'
-        f'{elevation_m}'
+        f'{e(elevation_m)}'
         f'</elevation_m>'
     )
 
@@ -138,7 +147,7 @@ def elevation_m_(elevation_m):
 def vertical_datum_(vertical_datum):
     return (
         f'<verticalDatum>'
-        f'{vertical_datum}'
+        f'{e(vertical_datum)}'
         f'</verticalDatum>'
     )
 
@@ -170,7 +179,7 @@ def source_info_(site_code, site_name, latitude, longitude, elevation_m, vertica
 def variable_code_(variable_code):
     return (
         f'<variableCode>'
-        f'{variable_code}'
+        f'{e(variable_code)}'
         f'</variableCode>'
     )
 
@@ -178,7 +187,7 @@ def variable_code_(variable_code):
 def variable_name_(variable_name):
     return (
         f'<variableName>'
-        f'{variable_name}'
+        f'{e(variable_name)}'
         f'</variableName>'
     )
 
@@ -186,7 +195,7 @@ def variable_name_(variable_name):
 def variable_description_(variable_description):
     return (
         f'<variableDescription>'
-        f'{variable_description}'
+        f'{e(variable_description)}'
         f'</variableDescription>'
     )
 
@@ -204,7 +213,7 @@ def unit_(unit_name, unit_abbreviation, unit_code):
 def unit_name_(unit_name):
     return (
         f'<unitName>'
-        f'{unit_name}'
+        f'{e(unit_name)}'
         f'</unitName>'
     )
 
@@ -212,7 +221,7 @@ def unit_name_(unit_name):
 def unit_abbreviation_(unit_abbreviation):
     return (
         f'<unitAbbreviation>'
-        f'{unit_abbreviation}'
+        f'{e(unit_abbreviation)}'
         f'</unitAbbreviation>'
     )
 
@@ -220,7 +229,7 @@ def unit_abbreviation_(unit_abbreviation):
 def unit_code_(unit_code):
     return (
         f'<unitCode>'
-        f'{unit_code}'
+        f'{e(unit_code)}'
         f'</unitCode>'
     )
 
@@ -228,7 +237,7 @@ def unit_code_(unit_code):
 def no_data_value_(no_data_value):
     return (
         f'<noDataValue>'
-        f'{no_data_value}'
+        f'{e(no_data_value)}'
         f'</noDataValue>'
     )
 
@@ -236,7 +245,7 @@ def no_data_value_(no_data_value):
 def value_count_(value_count):
     return (
         f'<valueCount>'
-        f'{value_count}'
+        f'{e(value_count)}'
         f'</valueCount>'
     )
 
@@ -275,7 +284,7 @@ def method_(method_code, method_description, method_link):
 def method_code_(method_code):
     return (
         f'<methodCode>'
-        f'{method_code}'
+        f'{e(method_code)}'
         f'</methodCode>'
     )
 
@@ -283,7 +292,7 @@ def method_code_(method_code):
 def method_description_(method_description):
     return (
         f'<methodDescription>'
-        f'{method_description}'
+        f'{e(method_description)}'
         f'</methodDescription>'
     )
 
@@ -291,7 +300,7 @@ def method_description_(method_description):
 def method_link_(method_link):
     return (
         f'<methodLink>'
-        f'{method_link}'
+        f'{e(method_link)}'
         f'</methodLink>'
     )
 
@@ -299,7 +308,7 @@ def method_link_(method_link):
 def source_code_(source_code):
     return (
         f'<sourceCode>'
-        f'{source_code}'
+        f'{e(source_code)}'
         f'</sourceCode>'
     )
 
@@ -307,7 +316,7 @@ def source_code_(source_code):
 def organization_(organization):
     return (
         f'<organization>'
-        f'{organization}'
+        f'{e(organization)}'
         f'</organization>'
     )
 
@@ -315,7 +324,7 @@ def organization_(organization):
 def source_description_(source_description):
     return (
         f'<sourceDescription>'
-        f'{source_description}'
+        f'{e(source_description)}'
         f'</sourceDescription>'
     )
 
@@ -323,7 +332,7 @@ def source_description_(source_description):
 def source_link_(source_link):
     return (
         f'<sourceLink>'
-        f'{source_link}'
+        f'{e(source_link)}'
         f'</sourceLink>'
     )
 
@@ -331,7 +340,7 @@ def source_link_(source_link):
 def contact_name_(contact_name):
     return (
         f'<contactName>'
-        f'{contact_name}'
+        f'{e(contact_name)}'
         f'</contactName>'
     )
 
@@ -339,7 +348,7 @@ def contact_name_(contact_name):
 def type_of_contact_(type_of_contact):
     return (
         f'<typeOfContact>'
-        f'{type_of_contact}'
+        f'{e(type_of_contact)}'
         f'</typeOfContact>'
     )
 
@@ -347,7 +356,7 @@ def type_of_contact_(type_of_contact):
 def phone_(phone):
     return (
         f'<phone>'
-        f'{phone}'
+        f'{e(phone)}'
         f'</phone>'
     )
 
@@ -355,7 +364,7 @@ def phone_(phone):
 def email_(email):
     return (
         f'<email>'
-        f'{email}'
+        f'{e(email)}'
         f'</email>'
     )
 
@@ -363,7 +372,7 @@ def email_(email):
 def address_(address):
     return (
         f'<address>'
-        f'{address}'
+        f'{e(address)}'
         f'</address>'
     )
 
@@ -407,7 +416,7 @@ def series_(value_count, begin_datetime, end_datetime, variable_code, variable_n
 def series_catalog_(series_catalog_table):
     return (
         f'<seriesCatalog>'
-        f'{"".join(series_(series[1], series[2], series[3], series[4], series[5], series[6], series[7], series[8], series[9], series[10], series[11], series[12], series[13], series[14], series[15], series[16], series[17], series[18], series[19], series[20], series[21], series[22]) for series in series_catalog_table.itertuples(index=True, name="Pandas"))}'
+        f'{"".join(series_(series[1], series[2], series[3], series[4], series[5], series[6], series[7], series[8], series[9], series[10], series[11], series[12], series[13], series[14], series[15], series[16], series[17], series[18], series[19], series[20], series[21], series[22]) for series in series_catalog_table.itertuples(index=True, name="Pandas")) if series_catalog_table is not None else ""}'
         f'</seriesCatalog>'
     )
 
@@ -424,25 +433,31 @@ def site_(site_code, site_name, latitude, longitude, elevation_m, vertical_datum
 def variables_(variable_info_table):
     return (
         f'<variables>'
-        f'{"".join(variable_(variable[1], variable[2], variable[3], variable[4], variable[5], variable[6], variable[7]) for variable in variable_info_table.itertuples(index=True, name="Pandas"))}'
+        f'{"".join(variable_(variable[1], variable[2], variable[3], variable[4], variable[5], variable[6], variable[7]) for variable in variable_info_table.itertuples(index=True, name="Pandas")) if variable_info_table is not None else ""}'
         f'</variables>'
     )
 
 
 def value_(data_value, date_time, time_offset, method_id, source_id):
+    time_offset_attr = f' timeOffset="{e(time_offset)}"' if time_offset is not None else ""
+    method_code_attr = f' methodCode="{e(method_id)}"' if method_id is not None else ""
+    source_code_attr = f' sourceCode="{e(source_id)}"' if source_id is not None else ""
     return (
         f'<value'
-        f' dateTime="{date_time}" timeOffset="{time_offset}" methodCode="{method_id}" sourceCode="{source_id}"'
-        f'>{data_value}</value>'
+        f' dateTime="{e(date_time)}"'
+        f'{time_offset_attr}'
+        f'{method_code_attr}'
+        f'{source_code_attr}'
+        f'>{e(data_value)}</value>'
     )
 
 
 def values_(values_table, method_table, source_table):
     return (
         f'<values>'
-        f'{"".join(value_(value[1], value[2], value[3], value[4], value[5]) for value in values_table.itertuples(index=True, name="Pandas"))}'
-        f'{"".join(method_(method[1], method[2], method[3]) for method in method_table.itertuples(index=True, name="Pandas"))}'
-        f'{"".join(source_(source[1], source[2], source[3], source[4], source[5], source[6], source[7], source[8], source[9]) for source in source_table.itertuples(index=True, name="Pandas"))}'
+        f'{"".join(value_(value[1], value[2], value[3], value[4], value[5]) for value in values_table.itertuples(index=True, name="Pandas")) if values_table is not None else ""}'
+        f'{"".join(method_(method[1], method[2], method[3]) for method in method_table.itertuples(index=True, name="Pandas")) if method_table is not None else ""}'
+        f'{"".join(source_(source[1], source[2], source[3], source[4], source[5], source[6], source[7], source[8], source[9]) for source in source_table.itertuples(index=True, name="Pandas")) if source_table is not None else ""}'
         f'</values>'
     )
 
@@ -450,9 +465,9 @@ def values_(values_table, method_table, source_table):
 def time_series_(site_info_table, variable_info_table, values_table, method_table, source_table):
     return (
         f'<timeSeries>'
-        f'{"".join(source_info_(site[1], site[2], site[3], site[4], site[5], site[6]) for site in site_info_table.itertuples(index=True, name="Pandas"))}'
-        f'{"".join(variable_(variable[1], variable[2], variable[3], variable[4], variable[5], variable[6], variable[7]) for variable in variable_info_table.itertuples(index=True, name="Pandas"))}'
-        f'{values_(values_table, method_table, source_table)}'
+        f'{"".join(source_info_(site[1], site[2], site[3], site[4], site[5], site[6]) for site in site_info_table.itertuples(index=True, name="Pandas")) if site_info_table is not None else ""}'
+        f'{"".join(variable_(variable[1], variable[2], variable[3], variable[4], variable[5], variable[6], variable[7]) for variable in variable_info_table.itertuples(index=True, name="Pandas")) if variable_info_table is not None else ""}'
+        f'{values_(values_table, method_table, source_table) if any((values_table is not None, method_table is not None, source_table is not None)) else ""}'
         f'</timeSeries>'
     )
 
@@ -464,8 +479,8 @@ def get_variables(output_data):
 
     response = (
         f'<variablesResponse xmlns="http://www.cuahsi.org/waterML/1.1/">'
-        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas"))}'
-        f'{variables_(variable_info_table)}'
+        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas")) if query_table is not None else ""}'
+        f'{variables_(variable_info_table) if variable_info_table is not None else ""}'
         f'</variablesResponse>'
     )
 
@@ -476,17 +491,17 @@ def get_site_info(output_data):
 
     query_table = output_data["query_table"]
     site_info_table = output_data["site_info_table"]
-    variable_info_table = output_data["variable_info_table"]
-    series_catalog_table = output_data["series_catalog_table"]
-    method_table = output_data["method_table"]
-    source_table = output_data["source_table"]
+    variable_info_table = output_data["variable_info_table"] if output_data["variable_info_table"] is not None else WofModels.variable_info_table.append(pd.DataFrame([tuple(None for i in WofModels.variable_info_table.columns)], columns=WofModels.variable_info_table.columns))
+    series_catalog_table = output_data["series_catalog_table"] if output_data["series_catalog_table"] is not None else WofModels.series_catalog_table.append(pd.DataFrame([tuple(None for i in WofModels.series_catalog_table.columns)], columns=WofModels.series_catalog_table.columns))
+    method_table = output_data["method_table"] if output_data["method_table"] is not None else WofModels.method_table.append(pd.DataFrame([tuple(None for i in WofModels.method_table.columns)], columns=WofModels.method_table.columns))
+    source_table = output_data["source_table"] if output_data["source_table"] is not None else WofModels.source_table.append(pd.DataFrame([tuple(None for i in WofModels.source_table.columns)], columns=WofModels.source_table.columns))
 
     series_catalog_table = pd.concat([series_catalog_table, variable_info_table, method_table, source_table], axis=1, ignore_index=True)
 
     response = (
         f'<sitesResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.cuahsi.org/waterML/1.1/">'
-        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas"))}'
-        f'{"".join(site_(site[1], site[2], site[3], site[4], site[5], site[6], series_catalog_table) for site in site_info_table.itertuples(index=True, name="Pandas"))}'
+        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas")) if query_table is not None else ""}'
+        f'{"".join(site_(site[1], site[2], site[3], site[4], site[5], site[6], series_catalog_table) for site in site_info_table.itertuples(index=True, name="Pandas")) if site_info_table is not None else ""}'
         f'</sitesResponse>'
     )
 
@@ -500,8 +515,8 @@ def get_sites(output_data):
 
     response = (
         f'<sitesResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.cuahsi.org/waterML/1.1/">'
-        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas"))}'
-        f'{"".join(site_(site[1], site[2], site[3], site[4], site[5], site[6]) for site in site_info_table.itertuples(index=True, name="Pandas"))}'
+        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas")) if query_table is not None else ""}'
+        f'{"".join(site_(site[1], site[2], site[3], site[4], site[5], site[6]) for site in site_info_table.itertuples(index=True, name="Pandas")) if site_info_table is not None else ""}'
         f'</sitesResponse>'
     )
 
@@ -515,8 +530,8 @@ def get_variable_info(output_data):
 
     response = (
         f'<variablesResponse xmlns="http://www.cuahsi.org/waterML/1.1/">'
-        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas"))}'
-        f'{variables_(variable_info_table)}'
+        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas")) if query_table is not None else ""}'
+        f'{variables_(variable_info_table) if variable_info_table is not None else ""}'
         f'</variablesResponse>'
     )
 
@@ -534,8 +549,8 @@ def get_values(output_data):
 
     response = (
         f'<timeSeriesResponse xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.cuahsi.org/waterML/1.1/">'
-        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas"))}'
-        f'{"".join(time_series_(site_info_table, variable_info_table, values_table, method_table, source_table))}'
+        f'{"".join(query_info_(query[1], query[2], query[3], query[4], query[5], query[6], query[7]) for query in query_table.itertuples(index=True, name="Pandas")) if query_table is not None else ""}'
+        f'{"".join(time_series_(site_info_table, variable_info_table, values_table, method_table, source_table)) if any((site_info_table is not None, variable_info_table is not None, values_table is not None, method_table is not None, source_table is not None)) else ""}'
         f'</timeSeriesResponse>'
     )
 

@@ -27,10 +27,6 @@ def get_wof_response(databases, outputs, params):
         response_format = "waterml"
         params["format"] = "waterml"
 
-    print(':::::')
-    print(network)
-    print(database)
-
     try:
         database_details = Database.objects.get(network_id=network, database_id=database)
     except Database.DoesNotExist:
@@ -58,5 +54,8 @@ def get_wof_response(databases, outputs, params):
 
 def transform_tables(tables):
     for key in tables:
-        tables[key] = tables[key].where((pd.notnull(tables[key])), None)
+        if tables[key].empty:
+            tables[key] = None
+        else:
+            tables[key] = tables[key].where((pd.notnull(tables[key])), None)
     return tables

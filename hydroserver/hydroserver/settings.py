@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework_xml',
     'drf_yasg',
     'hydroserver_core.rest_api',
+    'hydroserver_core.refts',
     'hydroserver_wof',
 ]
 
@@ -130,4 +131,4 @@ REST_FRAMEWORK = {
   'URL_FORMAT_OVERRIDE': None
 }
 
-PROXY_BASE_URL = "http://127.0.0.1:8000/hydroserver"
+PROXY_BASE_URL = "http://127.0.0.1:8090/hydroserver"

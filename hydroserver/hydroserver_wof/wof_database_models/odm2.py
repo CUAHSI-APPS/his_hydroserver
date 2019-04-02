@@ -103,7 +103,7 @@ def get_site_info(network, database, database_path, params):
                        FROM SamplingFeatures 
                        INNER JOIN Sites
                        ON SamplingFeatures.SamplingFeatureID = Sites.SamplingFeatureID
-                       WHERE SamplingFeatures.SamplingFeatureCode = '{str(location_param)}'""")
+                       WHERE SamplingFeatures.SamplingFeatureCode = ?""", (str(location_param),))
 
     site_info_table = site_info_table.append(pd.DataFrame(cursor.fetchall(), columns=site_info_table.columns))
 
@@ -118,7 +118,7 @@ def get_site_info(network, database, database_path, params):
                        ON FeatureActions.ActionID = Actions.ActionID
                        INNER JOIN SamplingFeatures
                        ON FeatureActions.SamplingFeatureID = SamplingFeatures.SamplingFeatureID
-                       WHERE SamplingFeatures.SamplingFeatureCode = '{str(location_param)}'""")
+                       WHERE SamplingFeatures.SamplingFeatureCode = ?""", (str(location_param),))
 
     series_catalog_table = series_catalog_table.append(pd.DataFrame(cursor.fetchall(), columns=series_catalog_table.columns))
 
@@ -135,7 +135,7 @@ def get_site_info(network, database, database_path, params):
                        ON Actions.MethodID = Methods.MethodID
                        INNER JOIN SamplingFeatures
                        ON FeatureActions.SamplingFeatureID = SamplingFeatures.SamplingFeatureID
-                       WHERE SamplingFeatures.SamplingFeatureCode = '{str(location_param)}'""")
+                       WHERE SamplingFeatures.SamplingFeatureCode = ?""", (str(location_param),))
 
     method_table = method_table.append(pd.DataFrame(cursor.fetchall(), columns=method_table.columns))
 
@@ -164,7 +164,7 @@ def get_site_info(network, database, database_path, params):
                        ON Affiliations.PersonID = People.PersonID
                        INNER JOIN SamplingFeatures
                        ON FeatureActions.SamplingFeatureID = SamplingFeatures.SamplingFeatureID
-                       WHERE SamplingFeatures.SamplingFeatureCode = '{str(location_param)}'""")
+                       WHERE SamplingFeatures.SamplingFeatureCode = ?""", (str(location_param),))
 
     source_table = source_table.append(pd.DataFrame(cursor.fetchall(), columns=source_table.columns))
 
@@ -185,7 +185,7 @@ def get_site_info(network, database, database_path, params):
                        ON Results.FeatureActionID = FeatureActions.FeatureActionID
                        INNER JOIN SamplingFeatures
                        ON FeatureActions.SamplingFeatureID = SamplingFeatures.SamplingFeatureID
-                       WHERE SamplingFeatures.SamplingFeatureCode = '{str(location_param)}'""")
+                       WHERE SamplingFeatures.SamplingFeatureCode = ?""", (str(location_param),))
 
     variable_info_table = variable_info_table.append(pd.DataFrame(cursor.fetchall(), columns=variable_info_table.columns))
 
@@ -306,8 +306,8 @@ def get_variable_info(network, database, database_path, params):
                        ON Results.UnitsID = Units.UnitsID
                        INNER JOIN Variables
                        ON Results.VariableID = Variables.VariableID
-                       WHERE Variables.VariableCode = '{str(variable_param)}'
-                       GROUP BY Results.VariableID""")
+                       WHERE Variables.VariableCode = ?
+                       GROUP BY Results.VariableID""", (str(variable_param),))
 
     variable_info_table = variable_info_table.append(pd.DataFrame(cursor.fetchall(), columns=variable_info_table.columns))
 
@@ -365,7 +365,7 @@ def get_values(network, database, database_path, params):
                        FROM SamplingFeatures 
                        INNER JOIN Sites
                        ON SamplingFeatures.SamplingFeatureID = Sites.SamplingFeatureID
-                       WHERE SamplingFeatures.SamplingFeatureCode = '{str(location_param)}'""")
+                       WHERE SamplingFeatures.SamplingFeatureCode = ?""", (str(location_param),))
 
     site_info_table = site_info_table.append(pd.DataFrame(cursor.fetchall(), columns=site_info_table.columns))
 
@@ -382,8 +382,8 @@ def get_values(network, database, database_path, params):
                        ON Results.UnitsID = Units.UnitsID
                        INNER JOIN Variables
                        ON Results.VariableID = Variables.VariableID
-                       WHERE Variables.VariableCode = '{str(variable_param)}'
-                       GROUP BY Results.VariableID""")
+                       WHERE Variables.VariableCode = ?
+                       GROUP BY Results.VariableID""", (str(variable_param),))
 
     variable_info_table = variable_info_table.append(pd.DataFrame(cursor.fetchall(), columns=variable_info_table.columns))
 
@@ -402,9 +402,9 @@ def get_values(network, database, database_path, params):
                        ON Results.VariableID = Variables.VariableID
                        INNER JOIN SamplingFeatures
                        ON FeatureActions.SamplingFeatureID = SamplingFeatures.SamplingFeatureID
-                       WHERE SamplingFeatures.SamplingFeatureCode = '{str(location_param)}'
-                       AND Variables.VariableCode = '{str(variable_param)}'
-                       GROUP BY MethodCode""")
+                       WHERE SamplingFeatures.SamplingFeatureCode = ? 
+                       AND Variables.VariableCode = ?
+                       GROUP BY MethodCode""", (str(location_param), str(variable_param),))
 
     method_table = method_table.append(pd.DataFrame(cursor.fetchall(), columns=method_table.columns))
 
@@ -435,11 +435,18 @@ def get_values(network, database, database_path, params):
                        ON Results.VariableID = Variables.VariableID
                        INNER JOIN SamplingFeatures
                        ON FeatureActions.SamplingFeatureID = SamplingFeatures.SamplingFeatureID
-                       WHERE SamplingFeatures.SamplingFeatureCode = '{str(location_param)}'
-                       AND Variables.VariableCode = '{str(variable_param)}'
-                       GROUP BY OrganizationCode""")
+                       WHERE SamplingFeatures.SamplingFeatureCode = ? 
+                       AND Variables.VariableCode = ?
+                       GROUP BY OrganizationCode""", (str(location_param), str(variable_param),))
 
     source_table = source_table.append(pd.DataFrame(cursor.fetchall(), columns=source_table.columns))
+
+    value_params = [variable_param, location_param]
+    if begin_datetime:
+        value_params.append(begin_datetime)
+    if end_datetime:
+        value_params.append(end_datetime)
+    value_params = tuple(value_params)
 
     cursor.execute(f"""SELECT TimeSeriesResultValues.DataValue,
                               TimeSeriesResultValues.ValueDateTime,
@@ -448,28 +455,28 @@ def get_values(network, database, database_path, params):
                               Organizations.OrganizationCode
 
                        FROM TimeSeriesResultValues
-                       INNER JOIN Results
+                       LEFT OUTER JOIN Results
                        ON TimeSeriesResultValues.ResultID = Results.ResultID
-                       INNER JOIN FeatureActions
+                       LEFT OUTER JOIN FeatureActions
                        ON Results.FeatureActionID = FeatureActions.FeatureActionID
-                       INNER JOIN Actions
+                       LEFT OUTER JOIN Actions
                        ON FeatureActions.ActionID = Actions.ActionID
-                       INNER JOIN ActionBy
+                       LEFT OUTER JOIN ActionBy
                        ON ActionBy.ActionID = Actions.ActionID
-                       INNER JOIN Affiliations
+                       LEFT OUTER JOIN Affiliations
                        ON ActionBy.AffiliationID = Affiliations.AffiliationID 
-                       INNER JOIN Methods
+                       LEFT OUTER JOIN Methods
                        ON Actions.MethodID = Methods.MethodID
-                       INNER JOIN Organizations
+                       LEFT OUTER JOIN Organizations
                        ON Affiliations.OrganizationID = Organizations.OrganizationID
-                       INNER JOIN Variables
+                       LEFT OUTER JOIN Variables
                        ON Results.VariableID = Variables.VariableID
-                       INNER JOIN SamplingFeatures
+                       LEFT OUTER JOIN SamplingFeatures
                        ON FeatureActions.SamplingFeatureID = SamplingFeatures.SamplingFeatureID
-                       WHERE Variables.VariableCode = '{str(variable_param)}'
-                       AND SamplingFeatures.SamplingFeatureCode = '{str(location_param)}'
-                       {f"AND datetime(TimeSeriesResultValues.ValueDateTime) > datetime('{str(begin_datetime)}')" if begin_datetime else ""}
-                       {f"AND datetime(TimeSeriesResultValues.ValueDateTime) < datetime('{str(end_datetime)}')" if end_datetime else ""}""")
+                       WHERE Variables.VariableCode = ?
+                       AND SamplingFeatures.SamplingFeatureCode = ?
+                       {f"AND datetime(TimeSeriesResultValues.ValueDateTime) >= datetime(?)" if begin_datetime else ""}
+                       {f"AND datetime(TimeSeriesResultValues.ValueDateTime) <= datetime(?)" if end_datetime else ""}""", value_params)
 
     values_table = values_table.append(pd.DataFrame(cursor.fetchall(), columns=values_table.columns))
 
