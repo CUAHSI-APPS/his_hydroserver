@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework_xml',
     'drf_yasg',
     'hydroserver_core.rest_api',
-    'hydroserver_core.refts',
     'hydroserver_wof',
 ]
 

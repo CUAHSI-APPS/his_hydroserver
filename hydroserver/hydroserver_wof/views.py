@@ -1,10 +1,11 @@
 from rest_framework.filters import BaseFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from django.http import JsonResponse
 from hydroserver.renderers import HydroServerRenderer
 from hydroserver_wof import wof_database_models, wof_output_models
 import coreapi
-from hydroserver_wof.utilities import get_content_type, get_wof_response
+from hydroserver_wof.utilities import get_content_type, get_wof_response, build_refts
 
 
 class SitesFilterBackend(BaseFilterBackend):
@@ -91,6 +92,39 @@ class ValuesFilterBackend(BaseFilterBackend):
             required=False,
             type='string'
         )]
+
+
+class Refts(viewsets.ViewSet):
+
+    def get_database_refts(self, request, network_id, database_id, *args, **kwaargs):
+        """
+        Builds a reference time series from a database.
+
+        Rest URL Pattern:
+
+        :param network: The network ID where the database is located.
+        :param database: The database ID to build the REFTS from.
+        """
+
+        databases = {
+            "odm2": wof_database_models.odm2.refts,
+            "netcdf": wof_database_models.netcdf.refts
+        }
+
+        params = {
+            "network": network_id,
+            "database": database_id,
+            "query_url": request.build_absolute_uri()
+        }
+
+        response = build_refts(databases, params)
+
+        if response == "404_Not_Found":
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        elif response == "400_Bad_Request":
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return JsonResponse(response, status=status.HTTP_200_OK)
 
 
 class Sites(viewsets.ViewSet):

@@ -4,6 +4,7 @@ from hydroserver_wof import views
 
 
 urlpatterns = [
+    url(r'^(?P<network_id>[\w\-]+)/(?P<database_id>.*)/refts/$', views.Refts.as_view({"get":"get_database_refts"})),
     url(r'^(?P<network_id>[\w\-]+)/(?P<database_id>.*)/sites/$', views.Sites.as_view({'get': 'get_sites'})),
     url(r'^(?P<network_id>[\w\-]+)/(?P<database_id>.*)/siteInfo/$', views.SiteInfo.as_view({'get': 'get_site_info'})),
     url(r'^(?P<network_id>[\w\-]+)/(?P<database_id>.*)/variables/$', views.Variables.as_view({'get': 'get_variables'})),

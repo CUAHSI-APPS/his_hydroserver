@@ -4,6 +4,61 @@ import datetime
 from hydroserver_wof.models import WofModels
 
 
+def refts(network, database, database_path, params):
+    
+    try:
+        sql_connect = sqlite3.connect(database_path, isolation_level=None)
+    except:
+        return "400_Bad_Request"
+
+    cursor = sql_connect.cursor()
+
+    cursor.execute(f"""SELECT Results.SampledMediumCV,
+                              Results.ValueCount,
+                              SamplingFeatures.SamplingFeatureName,
+                              SamplingFeatures.SamplingFeatureCode,
+                              Sites.Latitude,
+                              Sites.Longitude,
+                              Variables.VariableNameCV,
+                              Variables.VariableCode,
+                              Methods.MethodLink,
+                              Methods.MethodDescription,
+                              Actions.BeginDateTime,
+                              Actions.EndDateTime
+
+                       FROM Results
+                       INNER JOIN FeatureActions
+                       ON Results.FeatureActionID = FeatureActions.FeatureActionID
+                       INNER JOIN Actions
+                       ON FeatureActions.ActionID = Actions.ActionID
+                       INNER JOIN Methods
+                       ON Actions.MethodID = Methods.MethodID
+                       INNER JOIN SamplingFeatures
+                       ON FeatureActions.SamplingFeatureID = SamplingFeatures.SamplingFeatureID
+                       INNER JOIN Sites
+                       ON FeatureActions.SamplingFeatureID = Sites.SamplingFeatureID
+                       INNER JOIN Variables
+                       ON Results.VariableID = Variables.VariableID""")
+
+    refts_list = cursor.fetchall()
+
+    cursor.execute(f"""SELECT Datasets.DatasetTitle,
+                              Datasets.DatasetAbstract
+
+                       FROM Datasets""")
+
+    refts_metadata = cursor.fetchall()
+
+    refts_data = {
+        "refts_list": refts_list,
+        "refts_metadata": refts_metadata
+    }
+
+    sql_connect.close()
+
+    return refts_data
+
+
 def get_sites(network, database, database_path, params):
 
     try:
@@ -53,6 +108,8 @@ def get_sites(network, database, database_path, params):
         "query_table": query_table,
         "site_info_table": site_info_table
     }
+
+    sql_connect.close()
 
     return sites_data
 
@@ -198,6 +255,8 @@ def get_site_info(network, database, database_path, params):
         "variable_info_table": variable_info_table
     }
 
+    sql_connect.close()
+
     return site_info_data
 
 
@@ -258,6 +317,8 @@ def get_variables(network, database, database_path, params):
         "variable_info_table": variable_info_table
     }
 
+    sql_connect.close()
+
     return variables_data
 
 
@@ -315,6 +376,8 @@ def get_variable_info(network, database, database_path, params):
         "query_table": query_table,
         "variable_info_table": variable_info_table
     }
+
+    sql_connect.close()
 
     return variables_data
 
@@ -488,5 +551,7 @@ def get_values(network, database, database_path, params):
         "source_table": source_table,
         "values_table": values_table
     }
+
+    sql_connect.close()
 
     return values_data
