@@ -3,10 +3,6 @@ import sqlite3
 from hydroserver_wof import models
 
 
-def refts():
-	pass
-
-
 def get_sites():
     pass
 

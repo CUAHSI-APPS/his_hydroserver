@@ -4,8 +4,11 @@ from rest_framework.decorators import api_view
 from rest_framework.reverse import reverse
 from rest_framework import status
 from rest_framework import viewsets, status
+from django.http import JsonResponse
+from hydroserver_core.rest_api import database_models
 from hydroserver_core.rest_api.models import Network, Database
 from hydroserver_core.rest_api.serializers import NetworkSerializer, DatabaseSerializer
+from hydroserver_core.rest_api.utilities import build_refts, build_geojson
 from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
 
 
@@ -139,3 +142,79 @@ class DatabaseDetails(viewsets.ViewSet):
         database.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class Refts(viewsets.ViewSet):
+
+    def get_database_refts(self, request, network_id, database_id, *args, **kwaargs):
+        """
+        Builds a reference time series from a database.
+
+        Rest URL Pattern:
+
+        :param network: The network ID where the database is located.
+        :param database: The database ID to build the REFTS from.
+        """
+
+        databases = {
+            "odm2": database_models.odm2.refts,
+            "netcdf": database_models.netcdf.refts
+        }
+
+        params = {
+            "network": network_id,
+            "database": database_id,
+            "query_url": request.build_absolute_uri()
+        }
+
+        response = build_refts(databases, params)
+
+        if response == "404_Not_Found":
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        elif response == "400_Bad_Request":
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return JsonResponse(response, status=status.HTTP_200_OK)
+
+
+class GeoJson(viewsets.ViewSet):
+
+    def get_database_geojson(self, request, network_id, database_id, *args, **kwargs):
+        """
+        Builds a geojson from a database.
+
+        Rest URL Pattern:
+
+        :param network: The network ID where the database is located.
+        :param database: The database ID to build the GeoJSON from.
+        """
+
+        databases = {
+            "odm2": database_models.odm2.refts,
+            "netcdf": database_models.netcdf.refts
+        }
+
+        params = {
+            "network": network_id,
+            "database": database_id,
+            "query_url": request.build_absolute_uri()
+        }
+
+        response = build_geojson(databases, params)
+
+        if response == "404_Not_Found":
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        elif response == "400_Bad_Request":
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return JsonResponse(response, status=status.HTTP_200_OK)
+
+
+class DatabaseList(viewsets.ViewSet):
+
+    def get_database_list(self, request, *args, **kwargs):
+
+        databases = Database.objects.all()
+        serializer = DatabaseSerializer(databases, many=True)
+
+        return Response(serializer.data)
