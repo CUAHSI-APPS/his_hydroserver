@@ -10,9 +10,9 @@ from hydroserver import settings
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="HydroServer API",
+      title="Water Data Server API",
       default_version='v1.0',
-      description="HydroServer Rest API",
+      description="Water Data Server Rest API",
       contact=openapi.Contact(email="kjlippold@gmail.com")
    ),
    public=True,
@@ -21,8 +21,9 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    url(r'^hydroserver/admin/', admin.site.urls),
-    url(r'^hydroserver/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    url(r'^hydroserver/rest/', include('hydroserver_core.rest_api.urls')),
-    url(r'^hydroserver/wof/', include('hydroserver_wof.urls')),
+    url(r'^wds/admin/', admin.site.urls),
+    url(r'^wds/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    url(r'^wds/manage/', include('hydroserver_core.urls')),
+    url(r'^wds/wof/', include('hydroserver_wof.urls')),
+    url(r'^wds/refts/', include('hydroserver_refts.urls')),
 ]

@@ -1,2 +1,0 @@
-from hydroserver_core.rest_api.database_models import odm2
-from hydroserver_core.rest_api.database_models import netcdf

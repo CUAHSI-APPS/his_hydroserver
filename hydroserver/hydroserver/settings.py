@@ -20,12 +20,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'z!*316vif=lx90&_m#lx0%%w)$d3^h!j!=a@o8gpl3&iq@bgci'
+SECRET_KEY = 'b^rmf2@ul28oeyn5evk!ry(2jx3)=4a0-0699&)j=kmlaue*t@'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+CSRF_TRUSTED_ORIGINS = []
+CSRF_COOKIE_DOMAIN = ['127.0.0.1']
+CSRF_COOKIE_SECURE = True
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -40,7 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_xml',
     'drf_yasg',
-    'hydroserver_core.rest_api',
+    'hydroserver_core',
+    'hydroserver_refts',
     'hydroserver_wof',
 ]
 
@@ -122,12 +126,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/static/wds/'
 
-STATIC_ROOT = '/home/hsapp/hydroserver/static/'
+STATIC_ROOT = '/static/wds/'
 
 REST_FRAMEWORK = {
-  'URL_FORMAT_OVERRIDE': None
+  'URL_FORMAT_OVERRIDE': None,
 }
 
-PROXY_BASE_URL = "http://127.0.0.1:8090/hydroserver"
+PROXY_BASE_URL = 'http://127.0.0.1:8090/wds'

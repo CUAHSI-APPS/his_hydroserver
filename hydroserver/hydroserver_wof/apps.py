@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class WofApiConfig(AppConfig):
-    name = 'wof_api'
+class HydroserverWofConfig(AppConfig):
+    name = 'hydroserver_wof'

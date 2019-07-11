@@ -1,21 +1,21 @@
-from hydroserver_core.rest_api.models import Database
+from hydroserver_core.models import Database
 import time
 import pandas as pd
 
 
-def get_content_type(response_format):
+def get_response_info(content_type):
 
-    content_type_list = {
-        "waterml": "text/xml",
-        "waterjson": "application/json"
-    }
+    if content_type == "application/wml+xml":
+        response_format = "waterml"
+        response_type = "application/xml"
+    elif content_type == "application/water+json":
+        response_format = "waterjson"
+        response_type = "application/json"
+    else:
+        response_format = "waterml"
+        response_type = "application/xml"
 
-    content_type = content_type_list.get(response_format)
-
-    if response_format is None:
-        content_type = "text/xml"
-
-    return content_type
+    return response_format, response_type
 
 
 def get_wof_response(databases, outputs, params):
