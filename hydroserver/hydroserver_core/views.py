@@ -168,7 +168,6 @@ class Databases(viewsets.ModelViewSet):
 
         serializer = DatabaseSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
 
             database_type = request.data["database_type"]
             database_id = request.data["database_id"]
@@ -178,7 +177,13 @@ class Databases(viewsets.ModelViewSet):
                 "odm2_sqlite": core_database_models.odm2_sqlite.get_catalog_info
             }
 
+            if not databases.get(database_type):
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
             reference_table = databases[database_type](network=network_id, database=database_id, database_path=database_path)
+
+            if str(reference_table) == "400_Bad_Request":
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
             reference_data = [{
                     "site_name": i[3], 
@@ -197,7 +202,7 @@ class Databases(viewsets.ModelViewSet):
                     "database_id": database_id
                 } for i in reference_table.itertuples(index=True, name="Pandas")]
 
-            if len(ts_data) > 1:
+            if len(reference_data) > 1:
                 many = True
             else:
                 reference_data = reference_data[0]
@@ -205,6 +210,7 @@ class Databases(viewsets.ModelViewSet):
 
             reference_serializer = ReferenceSerializer(data=reference_data, many=many)
             if reference_serializer.is_valid():
+                serializer.save()
                 reference_serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
 
