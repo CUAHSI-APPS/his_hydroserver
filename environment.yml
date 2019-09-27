@@ -10,5 +10,6 @@ dependencies:
   - pandas=0.23.4
   - pip=18.1
   - sqlite=3.26.0
+  - pyshp=2.1.0
   - pip:
     - drf-yasg==1.12.0

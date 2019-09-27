@@ -135,3 +135,12 @@ REST_FRAMEWORK = {
 }
 
 PROXY_BASE_URL = 'http://127.0.0.1:8090/wds'
+
+# These settings are for experimental GeoServer connection only
+
+CONNECT_GEOSERVER = True
+GEOSERVER_URL = 'http://127.0.0.1:8181/geoserver'
+GEOSERVER_USER = 'admin'
+GEOSERVER_PASS = 'geoserver'
+GEOSERVER_VAULT = '/hydroserver_vault/'
+HYDROSERVER_VAULT = '/hydroserver_vault/'

@@ -7,6 +7,9 @@ from hydroserver_core import core_database_models
 from hydroserver_core.serializers import NetworkSerializer, DatabaseSerializer, ReferenceSerializer
 from rest_framework.permissions import BasePermission, IsAuthenticated, SAFE_METHODS
 
+from hydroserver import settings
+from hydroserver_geospatial.utilities import create_workspace, delete_workspace, create_datastore, delete_datastore
+
 
 class ReadOnly(BasePermission):
     def has_permission(self, request, view):
@@ -46,6 +49,10 @@ class Networks(viewsets.ModelViewSet):
         serializer = NetworkSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+
+            if settings.CONNECT_GEOSERVER:
+                create_workspace(request.data)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -122,6 +129,9 @@ class Network(viewsets.ModelViewSet):
         reference.delete()
         databases.delete()
         network.delete()
+
+        if settings.CONNECT_GEOSERVER:
+            delete_workspace(network_id)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -212,6 +222,10 @@ class Databases(viewsets.ModelViewSet):
             if reference_serializer.is_valid():
                 serializer.save()
                 reference_serializer.save()
+
+                if settings.CONNECT_GEOSERVER:
+                    create_datastore(reference_data, many)
+
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
 
             return Response(reference_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -269,5 +283,8 @@ class Database(viewsets.ModelViewSet):
 
         database.delete()
         reference.delete()
+
+        if settings.CONNECT_GEOSERVER:
+            delete_datastore(network_id, database_id)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
