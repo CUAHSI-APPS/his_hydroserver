@@ -3,6 +3,7 @@ import json
 import shapefile
 import os
 import shutil
+import sqlite3
 from hydroserver import settings
 
 
@@ -62,24 +63,23 @@ def delete_workspace(network_id):
 
 
 def create_datastore(reference_data, many):
-    
     if not many:
         reference_data = [reference_data]
     w = shapefile.Writer(settings.HYDROSERVER_VAULT + reference_data[0]["network_id"] + "/" + reference_data[0]["database_id"])
     w.field("Site_Name", "C")
     w.field("Site_Code", "C")
-    w.field("Variable_Name", "C")
-    w.field("Variable_Code", "C")
-    w.field("Sample_Medium", "C")
+    w.field("Var_Name", "C")
+    w.field("Var_Code", "C")
+    w.field("Sample_Med", "C")
     w.field("Value_Count", "N")
     w.field("Begin_Date", "C")
     w.field("End_Date", "C")
     w.field("Method_Link", "C")
-    w.field("Method_Description", "C")
+    w.field("Method_Desc", "C")
     w.field("Network_ID", "C")
     w.field("Database_ID", "C")
     for ref in reference_data:
-        w.point(ref["latitude"], ref["longitude"])
+        w.point(ref["longitude"], ref["latitude"])
         w.record(
             ref["site_name"],
             ref["site_code"],
@@ -119,7 +119,7 @@ def create_datastore(reference_data, many):
     rest_url = f"{geoserver_url}/rest/workspaces/{workspace_id}/datastores/{reference_data[0]['database_id'].replace('/', ' ')}/external.shp"
     data = f"file://{geoserver_directory}/{reference_data[0]['network_id']}/{reference_data[0]['database_id']}.shp"
     response = requests.put(rest_url, data=data, headers=headers, auth=geoserver_auth)
-
+    print(response.content)
     if response.status_code != 201:
         print("2")
         return False

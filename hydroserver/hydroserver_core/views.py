@@ -51,7 +51,10 @@ class Networks(viewsets.ModelViewSet):
             serializer.save()
 
             if settings.CONNECT_GEOSERVER:
-                create_workspace(request.data)
+                try:
+                    create_workspace(request.data)
+                except:
+                    pass
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -131,7 +134,10 @@ class Network(viewsets.ModelViewSet):
         network.delete()
 
         if settings.CONNECT_GEOSERVER:
-            delete_workspace(network_id)
+            try:
+                delete_workspace(network_id)
+            except:
+                pass
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -224,7 +230,10 @@ class Databases(viewsets.ModelViewSet):
                 reference_serializer.save()
 
                 if settings.CONNECT_GEOSERVER:
-                    create_datastore(reference_data, many)
+                    try:
+                        create_datastore(reference_data, many)
+                    except:
+                        pass
 
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
 
@@ -285,6 +294,9 @@ class Database(viewsets.ModelViewSet):
         reference.delete()
 
         if settings.CONNECT_GEOSERVER:
-            delete_datastore(network_id, database_id)
+            try:
+                delete_datastore(network_id, database_id)
+            except:
+                pass
 
         return Response(status=status.HTTP_204_NO_CONTENT)
